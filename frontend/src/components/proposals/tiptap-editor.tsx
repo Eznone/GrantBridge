@@ -37,6 +37,7 @@ export function TiptapEditor() {
   const [showToneSelector, setShowToneSelector] = useState(false)
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Placeholder.configure({
