@@ -40,7 +40,7 @@ class AIGenerationMetadataSchema(Schema):
     model: str
     tokens_used: int = 0
     confidence: float = 0.0
-    generated_at: str
+    generated_at: datetime
 
 
 class ProposalResponseSchema(Schema):

@@ -19,18 +19,18 @@ class GrantResponseSchema(BaseModel):
     funder_website: str
     funding_amount: Decimal
     currency: str
-    deadline: str
+    deadline: datetime
     application_url: str
     tags: List[str]
     categories: List[str]
     eligibility: List[str]
-    requirements: List[str]
+    requirements: str
     focus_areas: List[str]
     geographic_scope: str
     is_active: bool
     days_until_deadline: Optional[int]
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True
@@ -83,7 +83,7 @@ class SavedGrantResponseSchema(BaseModel):
 
     id: UUID
     grant: GrantResponseSchema
-    saved_at: str
+    saved_at: datetime
     notes: str
 
     class Config:
@@ -108,9 +108,9 @@ class ApplicationResponseSchema(BaseModel):
     grant_title: str
     status: str
     progress: int
-    submitted_at: Optional[str]
-    created_at: str
-    updated_at: str
+    submitted_at: Optional[datetime]
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True

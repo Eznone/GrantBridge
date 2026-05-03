@@ -50,6 +50,8 @@ class RefreshTokenSchema(BaseModel):
     refresh: str = Field(..., description="Refresh token")
 
 
+from datetime import datetime
+
 class UserResponseSchema(BaseModel):
     """Schema for user response."""
 
@@ -60,7 +62,7 @@ class UserResponseSchema(BaseModel):
     organization_id: UUID
     organization_name: str
     is_active: bool
-    created_at: str
+    created_at: datetime
 
     class Config:
         from_attributes = True

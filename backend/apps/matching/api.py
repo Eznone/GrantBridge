@@ -60,65 +60,6 @@ def get_matches(
     return [GrantMatchResponseSchema.from_orm(m) for m in matches]
 
 
-@router.get(
-    "/matches/{match_id}",
-    response=GrantMatchResponseSchema,
-    auth=JWTAuth(),
-    summary="Get match details",
-)
-def get_match(request, match_id: str):
-    """
-    Get detailed information about a specific grant match.
-    """
-    organization = request.auth.organization
-
-    try:
-        match = MatchingService.get_match(match_id, organization)
-        return GrantMatchResponseSchema.from_orm(match)
-    except GrantMatch.DoesNotExist:
-        return {"error": "Match not found"}, 404
-
-
-@router.post(
-    "/matches/{match_id}/dismiss",
-    response=GrantMatchResponseSchema,
-    auth=JWTAuth(),
-    summary="Dismiss a match",
-)
-def dismiss_match(request, match_id: str, payload: DismissMatchSchema):
-    """
-    Dismiss a grant match if not interested.
-    """
-    organization = request.auth.organization
-
-    try:
-        match = MatchingService.get_match(match_id, organization)
-        dismissed_match = MatchingService.dismiss_match(match, reason=payload.reason)
-        return GrantMatchResponseSchema.from_orm(dismissed_match)
-    except GrantMatch.DoesNotExist:
-        return {"error": "Match not found"}, 404
-
-
-@router.post(
-    "/matches/{match_id}/undismiss",
-    response=GrantMatchResponseSchema,
-    auth=JWTAuth(),
-    summary="Restore a dismissed match",
-)
-def undismiss_match(request, match_id: str):
-    """
-    Restore a previously dismissed match.
-    """
-    organization = request.auth.organization
-
-    try:
-        match = MatchingService.get_match(match_id, organization)
-        restored_match = MatchingService.undismiss_match(match)
-        return GrantMatchResponseSchema.from_orm(restored_match)
-    except GrantMatch.DoesNotExist:
-        return {"error": "Match not found"}, 404
-
-
 @router.post(
     "/matches/calculate",
     response=CalculateMatchesResponseSchema,
@@ -180,6 +121,65 @@ def get_top_matches(request, limit: int = 10):
     matches = GrantMatch.get_top_matches(organization, limit=min(limit, 50))
 
     return [GrantMatchResponseSchema.from_orm(m) for m in matches]
+
+
+@router.get(
+    "/matches/{match_id}",
+    response=GrantMatchResponseSchema,
+    auth=JWTAuth(),
+    summary="Get match details",
+)
+def get_match(request, match_id: str):
+    """
+    Get detailed information about a specific grant match.
+    """
+    organization = request.auth.organization
+
+    try:
+        match = MatchingService.get_match(match_id, organization)
+        return GrantMatchResponseSchema.from_orm(match)
+    except GrantMatch.DoesNotExist:
+        return {"error": "Match not found"}, 404
+
+
+@router.post(
+    "/matches/{match_id}/dismiss",
+    response=GrantMatchResponseSchema,
+    auth=JWTAuth(),
+    summary="Dismiss a match",
+)
+def dismiss_match(request, match_id: str, payload: DismissMatchSchema):
+    """
+    Dismiss a grant match if not interested.
+    """
+    organization = request.auth.organization
+
+    try:
+        match = MatchingService.get_match(match_id, organization)
+        dismissed_match = MatchingService.dismiss_match(match, reason=payload.reason)
+        return GrantMatchResponseSchema.from_orm(dismissed_match)
+    except GrantMatch.DoesNotExist:
+        return {"error": "Match not found"}, 404
+
+
+@router.post(
+    "/matches/{match_id}/undismiss",
+    response=GrantMatchResponseSchema,
+    auth=JWTAuth(),
+    summary="Restore a dismissed match",
+)
+def undismiss_match(request, match_id: str):
+    """
+    Restore a previously dismissed match.
+    """
+    organization = request.auth.organization
+
+    try:
+        match = MatchingService.get_match(match_id, organization)
+        restored_match = MatchingService.undismiss_match(match)
+        return GrantMatchResponseSchema.from_orm(restored_match)
+    except GrantMatch.DoesNotExist:
+        return {"error": "Match not found"}, 404
 
 
 # Made with Bob

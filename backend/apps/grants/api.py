@@ -63,22 +63,35 @@ def list_grants(
     categories_list = [c.strip() for c in categories.split(",")] if categories else None
     tags_list = [t.strip() for t in tags.split(",")] if tags else None
 
-    # Create filter schema
-    filters = GrantFilterSchema(
+    # Handle sorting order
+    sort_order = "asc"
+    if sort_by and sort_by.startswith("-"):
+        sort_order = "desc"
+        sort_by = sort_by[1:]
+
+    # Get grants from service
+    grants, total, total_pages = GrantService.list_grants(
         search=search,
         categories=categories_list,
         tags=tags_list,
         min_amount=min_amount,
         max_amount=max_amount,
-        deadline_from=deadline_from,
-        deadline_to=deadline_to,
+        deadline_after=deadline_from,
+        deadline_before=deadline_to,
         geographic_scope=geographic_scope,
-        sort_by=sort_by,
         page=page,
-        page_size=min(page_size, 100),  # Cap at 100
+        page_size=min(page_size, 100),
+        sort_by=sort_by or "deadline",
+        sort_order=sort_order,
     )
 
-    return GrantService.list_grants(filters)
+    return {
+        "grants": grants,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+    }
 
 
 @router.get(

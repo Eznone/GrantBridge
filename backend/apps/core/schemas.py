@@ -7,6 +7,8 @@ from typing import List, Optional
 from ninja import Schema
 
 
+from uuid import UUID
+
 # Dashboard Schemas
 class DashboardStatsOut(Schema):
     """Dashboard statistics output schema."""
@@ -22,11 +24,11 @@ class DashboardStatsOut(Schema):
 class UpcomingDeadlineOut(Schema):
     """Upcoming deadline output schema."""
 
-    grant_id: int
+    grant_id: UUID
     grant_title: str
     deadline: datetime
     days_remaining: int
-    application_id: Optional[int] = None
+    application_id: Optional[UUID] = None
     is_saved: bool
 
 
@@ -34,19 +36,19 @@ class UpcomingDeadlineOut(Schema):
 class NotificationOut(Schema):
     """Notification output schema."""
 
-    id: int
+    id: UUID
     type: str
     title: str
     message: str
     is_read: bool
     created_at: datetime
-    related_object_id: Optional[int] = None
+    related_object_id: Optional[UUID] = None
 
 
 class NotificationMarkReadIn(Schema):
     """Schema for marking notification as read."""
 
-    notification_id: int
+    notification_id: UUID
 
 
 # Analytics Schemas

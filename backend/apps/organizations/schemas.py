@@ -8,6 +8,8 @@ from decimal import Decimal
 from pydantic import BaseModel, Field, HttpUrl, validator
 
 
+from datetime import datetime
+
 class OrganizationResponseSchema(BaseModel):
     """Schema for organization response."""
 
@@ -27,8 +29,8 @@ class OrganizationResponseSchema(BaseModel):
     country: str
     founded_year: Optional[int]
     team_size: Optional[int]
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True
