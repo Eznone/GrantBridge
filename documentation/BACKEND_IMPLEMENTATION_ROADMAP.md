@@ -923,7 +923,7 @@ class Command(BaseCommand):
 
         # Create sample grants
         grant1 = Grant.objects.create(
-            title="Community Development Grant 2024",
+            title="Community Development Grant 2026",
             organization="National Community Foundation",
             funding_amount=50000,
             # ... other fields

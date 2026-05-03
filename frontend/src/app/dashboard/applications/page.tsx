@@ -21,12 +21,12 @@ interface Application {
 const mockApplications: Application[] = [
   {
     id: 1,
-    grantTitle: 'Community Development Grant 2024',
+    grantTitle: 'Community Development Grant 2026',
     organization: 'National Community Foundation',
     amount: '$50,000',
-    submittedDate: '2024-02-15',
+    submittedDate: '2026-07-15',
     status: 'under_review',
-    deadline: '2024-03-15',
+    deadline: '2026-08-15',
     progress: 100,
   },
   {
@@ -34,9 +34,9 @@ const mockApplications: Application[] = [
     grantTitle: 'Education Innovation Fund',
     organization: 'Education Forward Initiative',
     amount: '$75,000',
-    submittedDate: '2024-02-20',
+    submittedDate: '2026-08-01',
     status: 'submitted',
-    deadline: '2024-04-01',
+    deadline: '2026-09-01',
     progress: 100,
   },
   {
@@ -44,9 +44,9 @@ const mockApplications: Application[] = [
     grantTitle: 'Healthcare Access Initiative',
     organization: 'Health for All Coalition',
     amount: '$60,000',
-    submittedDate: '2024-01-10',
+    submittedDate: '2026-07-01',
     status: 'approved',
-    deadline: '2024-03-30',
+    deadline: '2026-08-30',
     progress: 100,
   },
   {
@@ -56,7 +56,7 @@ const mockApplications: Application[] = [
     amount: '$45,000',
     submittedDate: '',
     status: 'draft',
-    deadline: '2024-05-15',
+    deadline: '2026-11-15',
     progress: 65,
   },
   {
@@ -64,9 +64,9 @@ const mockApplications: Application[] = [
     grantTitle: 'Environmental Sustainability Program',
     organization: 'Green Future Foundation',
     amount: '$100,000',
-    submittedDate: '2024-01-05',
+    submittedDate: '2026-06-05',
     status: 'rejected',
-    deadline: '2024-04-20',
+    deadline: '2026-10-20',
     progress: 100,
   },
 ]

@@ -233,12 +233,12 @@ GET /grants?categories=education,health&min_amount=10000&page=1
       "description": "Supporting innovative education programs...",
       "amount_min": 10000.0,
       "amount_max": 50000.0,
-      "deadline": "2024-12-31T23:59:59Z",
+      "deadline": "2026-12-31T23:59:59Z",
       "categories": ["education", "innovation"],
       "tags": ["K-12", "technology"],
       "eligibility": "501(c)(3) organizations",
       "application_url": "https://foundation.org/apply",
-      "created_at": "2024-01-01T00:00:00Z"
+      "created_at": "2026-01-01T00:00:00Z"
     }
   ]
 }
@@ -266,7 +266,7 @@ Get detailed information about a specific grant.
   "amount_min": 10000.0,
   "amount_max": 50000.0,
   "currency": "USD",
-  "deadline": "2024-12-31T23:59:59Z",
+  "deadline": "2026-12-31T23:59:59Z",
   "categories": ["education", "innovation"],
   "tags": ["K-12", "technology"],
   "eligibility": "501(c)(3) organizations",
@@ -274,8 +274,8 @@ Get detailed information about a specific grant.
   "geographic_scope": ["United States"],
   "application_url": "https://foundation.org/apply",
   "requirements": "Detailed requirements...",
-  "created_at": "2024-01-01T00:00:00Z",
-  "updated_at": "2024-01-15T00:00:00Z"
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-15T00:00:00Z"
 }
 ```
 
@@ -347,8 +347,8 @@ Get all proposals for the organization.
       },
       "status": "draft",
       "amount_requested": 25000.0,
-      "created_at": "2024-01-01T00:00:00Z",
-      "updated_at": "2024-01-15T00:00:00Z",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-15T00:00:00Z",
       "submitted_at": null
     }
   ]
@@ -390,7 +390,7 @@ Create a new proposal.
   },
   "status": "draft",
   "amount_requested": 25000.0,
-  "created_at": "2024-01-01T00:00:00Z"
+  "created_at": "2026-01-01T00:00:00Z"
 }
 ```
 
@@ -412,7 +412,7 @@ Submit a proposal for review.
   "proposal": {
     "id": 1,
     "status": "submitted",
-    "submitted_at": "2024-01-15T10:30:00Z"
+    "submitted_at": "2026-01-15T10:30:00Z"
   }
 }
 ```
@@ -447,7 +447,7 @@ Get grant matches for the organization.
         "id": 1,
         "title": "Education Innovation Grant",
         "amount_max": 50000.0,
-        "deadline": "2024-12-31T23:59:59Z"
+        "deadline": "2026-12-31T23:59:59Z"
       },
       "match_score": 85.5,
       "match_quality": "excellent",
@@ -459,7 +459,7 @@ Get grant matches for the organization.
         "Highlight community partnerships"
       ],
       "is_dismissed": false,
-      "created_at": "2024-01-01T00:00:00Z"
+      "created_at": "2026-01-01T00:00:00Z"
     }
   ]
 }
@@ -529,16 +529,16 @@ Get time-series analytics data.
 ```json
 {
   "proposals": [
-    { "date": "2024-01-01", "count": 5 },
-    { "date": "2024-01-02", "count": 3 }
+    { "date": "2026-01-01", "count": 5 },
+    { "date": "2026-01-02", "count": 3 }
   ],
   "applications": [
-    { "date": "2024-01-01", "count": 2 },
-    { "date": "2024-01-02", "count": 4 }
+    { "date": "2026-01-01", "count": 2 },
+    { "date": "2026-01-02", "count": 4 }
   ],
   "matches": [
-    { "date": "2024-01-01", "count": 10 },
-    { "date": "2024-01-02", "count": 8 }
+    { "date": "2026-01-01", "count": 10 },
+    { "date": "2026-01-02", "count": 8 }
   ],
   "period_days": 90
 }
@@ -608,7 +608,7 @@ Get notifications for the user.
       "title": "New Grant Match",
       "message": "We found a new grant that matches your profile",
       "is_read": false,
-      "created_at": "2024-01-15T10:00:00Z",
+      "created_at": "2026-01-15T10:00:00Z",
       "related_object_id": 5
     }
   ]

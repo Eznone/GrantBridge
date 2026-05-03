@@ -47,23 +47,22 @@ def create_users():
     # Admin user
     admin = User.objects.create_superuser(
         email="admin@grantbridge.org",
+        name="Admin User",
         password="admin123",
-        first_name="Admin",
-        last_name="User",
     )
     users.append(admin)
     print(f"✓ Created admin: {admin.email}")
 
     # Regular users
     user_data = [
-        ("john@ngo.org", "John", "Doe", "password123"),
-        ("jane@charity.org", "Jane", "Smith", "password123"),
-        ("bob@foundation.org", "Bob", "Johnson", "password123"),
+        ("john@ngo.org", "John Doe", "password123"),
+        ("jane@charity.org", "Jane Smith", "password123"),
+        ("bob@foundation.org", "Bob Johnson", "password123"),
     ]
 
-    for email, first, last, pwd in user_data:
+    for email, name, pwd in user_data:
         user = User.objects.create_user(
-            email=email, password=pwd, first_name=first, last_name=last
+            email=email, name=name, password=pwd
         )
         users.append(user)
         print(f"✓ Created user: {email}")
@@ -131,7 +130,7 @@ def create_grants():
 
     grant_data = [
         {
-            "title": "Community Education Grant 2024",
+            "title": "Community Education Grant 2026",
             "funder_name": "National Education Foundation",
             "funder_website": "https://nef.org",
             "funding_amount": Decimal("50000.00"),

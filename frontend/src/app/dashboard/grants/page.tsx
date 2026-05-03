@@ -1,108 +1,34 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-
-interface Grant {
-  id: number
-  title: string
-  organization: string
-  amount: string
-  deadline: string
-  category: string
-  matchScore: number
-  status: 'new' | 'saved' | 'applied'
-  description: string
-}
-
-const mockGrants: Grant[] = [
-  {
-    id: 1,
-    title: 'Community Development Grant 2024',
-    organization: 'National Community Foundation',
-    amount: '$50,000',
-    deadline: '2024-03-15',
-    category: 'Community Development',
-    matchScore: 94,
-    status: 'new',
-    description: 'Supporting community-led initiatives that promote sustainable development and social cohesion.',
-  },
-  {
-    id: 2,
-    title: 'Education Innovation Fund',
-    organization: 'Education Forward Initiative',
-    amount: '$75,000',
-    deadline: '2024-04-01',
-    category: 'Education',
-    matchScore: 89,
-    status: 'saved',
-    description: 'Funding innovative educational programs that improve student outcomes and teacher effectiveness.',
-  },
-  {
-    id: 3,
-    title: 'Environmental Sustainability Program',
-    organization: 'Green Future Foundation',
-    amount: '$100,000',
-    deadline: '2024-04-20',
-    category: 'Environment',
-    matchScore: 85,
-    status: 'new',
-    description: 'Supporting projects that address climate change and promote environmental conservation.',
-  },
-  {
-    id: 4,
-    title: 'Healthcare Access Initiative',
-    organization: 'Health for All Coalition',
-    amount: '$60,000',
-    deadline: '2024-03-30',
-    category: 'Healthcare',
-    matchScore: 82,
-    status: 'applied',
-    description: 'Improving healthcare access for underserved communities through innovative delivery models.',
-  },
-  {
-    id: 5,
-    title: 'Youth Empowerment Grant',
-    organization: 'Youth Development Network',
-    amount: '$45,000',
-    deadline: '2024-05-15',
-    category: 'Youth Development',
-    matchScore: 78,
-    status: 'new',
-    description: 'Empowering young people through mentorship, skills training, and leadership development.',
-  },
-  {
-    id: 6,
-    title: 'Arts & Culture Preservation',
-    organization: 'Cultural Heritage Trust',
-    amount: '$55,000',
-    deadline: '2024-04-10',
-    category: 'Arts & Culture',
-    matchScore: 75,
-    status: 'saved',
-    description: 'Preserving and promoting local arts and cultural traditions through community engagement.',
-  },
-]
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { ErrorState } from '@/components/ui/error-state'
+import { useGrants } from '@/lib/hooks/use-grants'
+import { GrantFilters } from '@/lib/services/grant-service'
 
 const categories = ['All', 'Community Development', 'Education', 'Environment', 'Healthcare', 'Youth Development', 'Arts & Culture']
-const statusFilters = ['All', 'New', 'Saved', 'Applied']
 
 export default function GrantsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
-  const [selectedStatus, setSelectedStatus] = useState('All')
+  const [sortBy, setSortBy] = useState('deadline')
 
-  const filteredGrants = mockGrants.filter((grant) => {
-    const matchesSearch = grant.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      grant.organization.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === 'All' || grant.category === selectedCategory
-    const matchesStatus = selectedStatus === 'All' || grant.status === selectedStatus.toLowerCase()
-    return matchesSearch && matchesCategory && matchesStatus
-  })
+  // Build filters for API
+  const filters: GrantFilters = {
+    search: searchQuery || undefined,
+    categories: selectedCategory !== 'All' ? selectedCategory : undefined,
+    sort_by: sortBy,
+    page: 1,
+    page_size: 20,
+  }
+
+  // Fetch grants from backend
+  const { data: grantsData, loading, error } = useGrants(filters)
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -182,31 +108,13 @@ export default function GrantsPage() {
             </div>
           </div>
 
-          {/* Status Filter */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-              Status
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {statusFilters.map((status) => (
-                <Button
-                  key={status}
-                  variant={selectedStatus === status ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedStatus(status)}
-                >
-                  {status}
-                </Button>
-              ))}
-            </div>
-          </div>
         </div>
       </motion.div>
 
       {/* Results Count */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Showing {filteredGrants.length} of {mockGrants.length} grants
+          {loading ? 'Loading...' : `Showing ${grantsData?.grants.length || 0} of ${grantsData?.total || 0} grants`}
         </p>
         <Button variant="outline" size="sm">
           <svg
@@ -222,89 +130,107 @@ export default function GrantsPage() {
               d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
             />
           </svg>
-          Sort by Match Score
+          Sort by {sortBy === 'deadline' ? 'Deadline' : 'Match Score'}
         </Button>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <LoadingSpinner size="lg" />
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && <ErrorState message={error} />}
+
       {/* Grants Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredGrants.map((grant, index) => (
-          <motion.div
-            key={grant.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + index * 0.05 }}
-          >
-            <Card className="hover:shadow-lg transition-shadow h-full">
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg mb-1">{grant.title}</CardTitle>
-                    <CardDescription>{grant.organization}</CardDescription>
-                  </div>
-                  <div className="flex items-center gap-1 px-2 py-1 bg-green-50 dark:bg-green-900/20 rounded-full">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="text-xs font-semibold text-green-700 dark:text-green-400">
-                      {grant.matchScore}%
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{grant.category}</Badge>
-                  <Badge className={getStatusColor(grant.status)}>
-                    {grant.status.charAt(0).toUpperCase() + grant.status.slice(1)}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  {grant.description}
-                </p>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">Amount</p>
-                    <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                      {grant.amount}
+      {!loading && !error && grantsData && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {grantsData.grants.length === 0 ? (
+            <div className="col-span-2 text-center py-12">
+              <p className="text-gray-500">No grants found matching your criteria</p>
+            </div>
+          ) : (
+            grantsData.grants.map((grant, index) => (
+              <motion.div
+                key={grant.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + index * 0.05 }}
+              >
+                <Card className="hover:shadow-lg transition-shadow h-full">
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg mb-1">{grant.title}</CardTitle>
+                        <CardDescription>{grant.source}</CardDescription>
+                      </div>
+                      <div className="flex items-center gap-1 px-2 py-1 bg-green-50 dark:bg-green-900/20 rounded-full">
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        <span className="text-xs font-semibold text-green-700 dark:text-green-400">
+                          AI Match
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {grant.tags && grant.tags.length > 0 && (
+                        <Badge variant="secondary">{grant.tags[0]}</Badge>
+                      )}
+                      <Badge className={getStatusColor('new')}>
+                        Available
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      {grant.description?.substring(0, 150)}...
                     </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500 dark:text-gray-500">Deadline</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {new Date(grant.deadline).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button className="flex-1" size="sm">
-                    View Details
-                  </Button>
-                  {grant.status === 'new' && (
-                    <Button variant="outline" size="sm">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                        />
-                      </svg>
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-500">Amount</p>
+                        <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                          ${grant.fundingAmount?.toLocaleString() || 'N/A'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500 dark:text-gray-500">Deadline</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {grant.deadline ? new Date(grant.deadline).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          }) : 'N/A'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button className="flex-1" size="sm">
+                        View Details
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                          />
+                        </svg>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }

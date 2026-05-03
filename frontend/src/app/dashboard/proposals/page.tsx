@@ -1,16 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TiptapEditor } from '@/components/proposals/tiptap-editor'
 import { AISuggestions } from '@/components/proposals/ai-suggestions'
 import { useProposalStore } from '@/lib/stores/proposal-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { motion } from 'framer-motion'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { ErrorState } from '@/components/ui/error-state'
+import { useProposals } from '@/lib/hooks/use-proposals'
 
 export default function ProposalsPage() {
-  const { title, setTitle } = useProposalStore()
+  const { title, setTitle, content, setContent } = useProposalStore()
   const [isEditingTitle, setIsEditingTitle] = useState(false)
+  
+  // Fetch proposals to get the current one (you might want to add proposal ID selection)
+  const { data: proposals, loading, error } = useProposals({ page_size: 1 })
+
+  // Load the first proposal if available
+  useEffect(() => {
+    if (proposals && proposals.length > 0 && !title) {
+      setTitle(proposals[0].title)
+      if (proposals[0].content) {
+        setContent(proposals[0].content)
+      }
+    }
+  }, [proposals, title, setTitle, setContent])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <ErrorState message={error} />
+  }
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">

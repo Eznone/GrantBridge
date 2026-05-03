@@ -8,7 +8,7 @@ psycopg2-binary==2.9.9
 dj-database-url==2.1.0
 
 # Authentication & Security
-PyJWT==2.8.0
+django-ninja-jwt>=5.2.2
 django-cors-headers==4.3.1
 
 # WSGI Server for Production
@@ -27,6 +27,7 @@ python-docx==1.1.0
 # Utilities
 requests==2.31.0
 python-dateutil==2.8.2
+email-validator>=2.0.0
 
 # Error Tracking (Optional)
 sentry-sdk==1.39.1

@@ -159,10 +159,10 @@ CSRF_COOKIE_SECURE = True  # Production only
   "grants": [
     {
       "id": "grant-uuid",
-      "title": "Community Development Grant 2024",
+      "title": "Community Development Grant 2026",
       "organization": "National Community Foundation",
       "fundingAmount": 50000,
-      "deadline": "2024-03-15T23:59:59Z",
+      "deadline": "2026-03-15T23:59:59Z",
       "requirements": "Must serve underserved communities...",
       "tags": ["community", "development", "education"],
       "source": "grants.gov",
@@ -170,8 +170,8 @@ CSRF_COOKIE_SECURE = True  # Production only
       "status": "new",
       "description": "Supporting community-led initiatives...",
       "eligibility": ["501(c)(3) status", "Operating for 2+ years"],
-      "createdAt": "2024-01-15T10:00:00Z",
-      "updatedAt": "2024-02-01T14:30:00Z"
+      "createdAt": "2026-01-15T10:00:00Z",
+      "updatedAt": "2026-02-01T14:30:00Z"
     }
   ],
   "total": 156,
@@ -250,7 +250,7 @@ CSRF_COOKIE_SECURE = True  # Production only
   "content": "# Executive Summary\n\nOur organization...",
   "metadata": {
     "model": "watsonx.ai/granite-13b",
-    "generatedAt": "2024-02-15T10:30:00Z",
+    "generatedAt": "2026-02-15T10:30:00Z",
     "tokensUsed": 1250,
     "confidence": 0.92
   },
@@ -288,7 +288,7 @@ CSRF_COOKIE_SECURE = True  # Production only
       "type": "grant_matched",
       "title": "New grant match",
       "message": "Community Development Grant matches your profile",
-      "timestamp": "2024-02-15T09:30:00Z"
+      "timestamp": "2026-02-15T09:30:00Z"
     }
   ]
 }
@@ -310,7 +310,7 @@ CSRF_COOKIE_SECURE = True  # Production only
 {
   "data": {},
   "message": "Success message",
-  "timestamp": "2024-02-15T10:30:00Z"
+  "timestamp": "2026-02-15T10:30:00Z"
 }
 ```
 
@@ -325,7 +325,7 @@ CSRF_COOKIE_SECURE = True  # Production only
       "password": ["Password must be at least 8 characters"]
     }
   },
-  "timestamp": "2024-02-15T10:30:00Z"
+  "timestamp": "2026-02-15T10:30:00Z"
 }
 ```
 
@@ -1187,5 +1187,5 @@ python-dotenv==1.0.0
 ---
 
 **Document Version:** 1.0  
-**Last Updated:** 2024-02-15  
+**Last Updated:** 2026-02-15  
 **Author:** Backend Architecture Team

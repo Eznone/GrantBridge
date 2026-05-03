@@ -2,6 +2,11 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { AnalyticsOverview } from '@/components/dashboard/analytics-overview'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { ErrorState } from '@/components/ui/error-state'
+import { useDashboardStats } from '@/lib/hooks/use-dashboard'
+import { useTopMatches } from '@/lib/hooks/use-matching'
+import { useProposals } from '@/lib/hooks/use-proposals'
 
 const icons = {
   fileText: (
@@ -36,83 +41,60 @@ const icons = {
   ),
 }
 
-const mockStats = [
-  {
-    title: 'Active Applications',
-    value: '12',
-    icon: icons.fileText,
-    trend: '+12%',
-    trendUp: true,
-  },
-  {
-    title: 'Total Funding Sought',
-    value: '$485,000',
-    icon: icons.dollarSign,
-    trend: '+8%',
-    trendUp: true,
-  },
-  {
-    title: 'Match Rate',
-    value: '87%',
-    icon: icons.target,
-    trend: '+5%',
-    trendUp: true,
-  },
-  {
-    title: 'Proposals Drafted',
-    value: '24',
-    icon: icons.fileCheck,
-    trend: '+18%',
-    trendUp: true,
-  },
-]
-
-const mockGrants = [
-  {
-    id: 1,
-    title: 'Community Development Grant 2024',
-    amount: '$50,000',
-    deadline: 'Mar 15, 2024',
-    matchScore: 94,
-  },
-  {
-    id: 2,
-    title: 'Education Innovation Fund',
-    amount: '$75,000',
-    deadline: 'Apr 1, 2024',
-    matchScore: 89,
-  },
-  {
-    id: 3,
-    title: 'Environmental Sustainability Program',
-    amount: '$100,000',
-    deadline: 'Apr 20, 2024',
-    matchScore: 85,
-  },
-]
-
-const mockProposals = [
-  {
-    id: 1,
-    title: 'Youth Education Initiative',
-    status: 'In Progress',
-    progress: 75,
-  },
-  {
-    id: 2,
-    title: 'Community Health Program',
-    status: 'Review',
-    progress: 100,
-  },
-  {
-    id: 3,
-    title: 'Environmental Conservation',
-    status: 'Draft',
-    progress: 45,
-  },
-]
-
 export default function DashboardPage() {
+  // Fetch data from backend
+  const { data: stats, loading: statsLoading, error: statsError } = useDashboardStats()
+  const { data: topMatches, loading: matchesLoading, error: matchesError } = useTopMatches(3)
+  const { data: proposals, loading: proposalsLoading, error: proposalsError } = useProposals({
+    status: 'draft,review',
+    page_size: 3
+  })
+
+  // Show loading state
+  if (statsLoading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  // Show error state
+  if (statsError) {
+    return <ErrorState message={statsError} />
+  }
+
+  // Prepare stats for display
+  const displayStats = stats ? [
+    {
+      title: 'Active Applications',
+      value: stats.active_applications.toString(),
+      icon: icons.fileText,
+      trend: '+12%',
+      trendUp: true,
+    },
+    {
+      title: 'Total Funding Sought',
+      value: `$${stats.total_funding.toLocaleString()}`,
+      icon: icons.dollarSign,
+      trend: '+8%',
+      trendUp: true,
+    },
+    {
+      title: 'Match Rate',
+      value: `${Math.round(stats.success_rate)}%`,
+      icon: icons.target,
+      trend: '+5%',
+      trendUp: true,
+    },
+    {
+      title: 'Proposals Drafted',
+      value: stats.total_proposals.toString(),
+      icon: icons.fileCheck,
+      trend: '+18%',
+      trendUp: true,
+    },
+  ] : []
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -125,7 +107,7 @@ export default function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {mockStats.map((stat, index) => (
+        {displayStats.map((stat, index) => (
           <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -168,28 +150,36 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {mockGrants.map((grant) => (
-                <div
-                  key={grant.id}
-                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-pointer group"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                      {grant.title}
-                    </h3>
-                    <div className="flex items-center gap-1 px-2 py-0.5 bg-green-50 dark:bg-green-900/20 rounded-full">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                      <span className="text-xs font-semibold text-green-700 dark:text-green-400">
-                        {grant.matchScore}%
-                      </span>
+              {matchesLoading ? (
+                <LoadingSpinner />
+              ) : matchesError ? (
+                <p className="text-sm text-red-600">{matchesError}</p>
+              ) : topMatches.length === 0 ? (
+                <p className="text-sm text-gray-500">No matches found</p>
+              ) : (
+                topMatches.map((match) => (
+                  <div
+                    key={match.id}
+                    className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-pointer group"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                        {match.grant_title}
+                      </h3>
+                      <div className="flex items-center gap-1 px-2 py-0.5 bg-green-50 dark:bg-green-900/20 rounded-full">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                        <span className="text-xs font-semibold text-green-700 dark:text-green-400">
+                          {Math.round(match.match_score)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{match.quality}</span>
+                      <span>Match Quality</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                    <span className="font-medium text-gray-900 dark:text-gray-100">{grant.amount}</span>
-                    <span>Deadline: {grant.deadline}</span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
@@ -204,33 +194,35 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {mockProposals.map((proposal) => (
-                <div
-                  key={proposal.id}
-                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                      {proposal.title}
-                    </h3>
-                    <span className="text-xs px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium">
-                      {proposal.status}
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
-                      <span>Progress</span>
-                      <span className="font-medium">{proposal.progress}%</span>
+              {proposalsLoading ? (
+                <LoadingSpinner />
+              ) : proposalsError ? (
+                <p className="text-sm text-red-600">{proposalsError}</p>
+              ) : proposals.length === 0 ? (
+                <p className="text-sm text-gray-500">No proposals in progress</p>
+              ) : (
+                proposals.map((proposal) => (
+                  <div
+                    key={proposal.id}
+                    className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                        {proposal.title}
+                      </h3>
+                      <span className="text-xs px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium">
+                        {proposal.status}
+                      </span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div
-                        className="bg-gradient-to-r from-primary-500 to-accent-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${proposal.progress}%` }}
-                      ></div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                        <span>Status</span>
+                        <span className="font-medium capitalize">{proposal.status}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>

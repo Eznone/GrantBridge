@@ -11,3 +11,4 @@ pandas>=2.1.0
 faiss-cpu
 python-dateutil
 Pillow==10.1.0
+email-validator>=2.0.0

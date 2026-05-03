@@ -327,7 +327,7 @@ export default function SettingsPage() {
                   Current Plan
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  $49/month • Renews on March 15, 2024
+                  $49/month • Renews on September 15, 2026
                 </p>
               </div>
               <Button variant="outline">Manage</Button>

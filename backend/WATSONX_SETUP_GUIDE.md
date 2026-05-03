@@ -184,7 +184,7 @@ model = Model(
 prompt = """
 Write an executive summary for a grant proposal with these details:
 - Organization: Education for All Foundation
-- Grant: Community Education Grant 2024
+- Grant: Community Education Grant 2026
 - Amount: $50,000
 - Focus: Literacy programs in rural areas
 - Impact: Serve 500 students
