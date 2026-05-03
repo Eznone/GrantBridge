@@ -1,0 +1,38 @@
+# Core Django
+Django==4.2.7
+django-ninja==1.0.1
+python-dotenv==1.0.0
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Authentication & Security
+PyJWT==2.8.0
+django-cors-headers==4.3.1
+
+# WSGI Server for Production
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# AI & ML Libraries
+ibm-watson-machine-learning==1.0.335
+faiss-cpu==1.7.4
+sentence-transformers==2.2.2
+
+# Document Generation
+reportlab==4.0.7
+python-docx==1.1.0
+
+# Utilities
+requests==2.31.0
+python-dateutil==2.8.2
+
+# Error Tracking (Optional)
+sentry-sdk==1.39.1
+
+# Development Tools (optional, comment out for production)
+# black==23.12.1
+# flake8==6.1.0
+# pytest==7.4.3
+# pytest-django==4.7.0

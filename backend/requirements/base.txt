@@ -1,0 +1,13 @@
+Django==4.2.7
+django-ninja==1.0.1
+django-ninja-jwt>=5.2.2
+django-cors-headers==4.3.1
+psycopg2-binary==2.9.9
+python-dotenv==1.0.0
+gunicorn==21.2.0
+dj-database-url==2.1.0
+ibm-watson-machine-learning>=1.0.327
+pandas>=2.1.0
+faiss-cpu
+python-dateutil
+Pillow==10.1.0

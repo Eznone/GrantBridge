@@ -1,0 +1,77 @@
+# Render Blueprint for GrantBridge Backend
+# https://render.com/docs/blueprint-spec
+
+services:
+  # Django API Service
+  - type: web
+    name: grantbridge-api
+    env: python
+    region: oregon
+    plan: starter
+    branch: main
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python manage.py collectstatic --no-input
+      python manage.py migrate --no-input
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: False
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: grantbridge-db
+          property: connectionString
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ACCESS_TOKEN_LIFETIME
+        value: 15
+      - key: JWT_REFRESH_TOKEN_LIFETIME
+        value: 10080
+      - key: WATSONX_API_KEY
+        sync: false
+      - key: WATSONX_PROJECT_ID
+        sync: false
+      - key: WATSONX_URL
+        value: https://us-south.ml.cloud.ibm.com
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USE_TLS
+        value: True
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        value: noreply@grantbridge.org
+      - key: SENTRY_DSN
+        sync: false
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+databases:
+  # PostgreSQL Database (or use external Supabase)
+  - name: grantbridge-db
+    databaseName: grantbridge
+    user: grantbridge
+    plan: starter
+    region: oregon
+    ipAllowList: []
+
+# Alternative: Use Supabase instead of Render PostgreSQL
+# In that case, remove the databases section above and set DATABASE_URL
+# to your Supabase connection string in the Render dashboard
+
+# Made with Bob
