@@ -1,272 +1,279 @@
-# GrantBridge Backend
+# GrantBridge Backend API
 
-Django + Django Ninja API backend for the GrantBridge AI-powered grant management platform.
+AI-powered grant management platform for NGOs. Built with Django 4.2 and Django Ninja.
 
-## Technology Stack
-
-- **Framework**: Django 4.2.7 + Django Ninja 1.0.1
-- **Database**: Supabase (PostgreSQL)
-- **Vector Store**: FAISS
-- **AI Provider**: IBM watsonx.ai
-- **Authentication**: JWT (django-ninja-jwt)
-- **Deployment**: Render
-
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - Python 3.11+
-- PostgreSQL (or use Supabase)
-- pip and virtualenv
+- PostgreSQL (or Supabase account)
+- IBM watsonx.ai account (for AI features)
 
 ### Installation
 
-1. **Create and activate virtual environment**:
+1. **Clone and navigate to backend**
+
+```bash
+cd backend
+```
+
+2. **Create virtual environment**
 
 ```bash
 python -m venv venv
-# On Windows
-venv\Scripts\activate
-# On macOS/Linux
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-2. **Install dependencies**:
+3. **Install dependencies**
 
 ```bash
-pip install -r requirements/development.txt
+pip install -r requirements.txt
 ```
 
-3. **Set up environment variables**:
+4. **Set up environment variables**
 
 ```bash
-# Copy the example file
 cp .env.example .env
-
 # Edit .env with your configuration
-# At minimum, set:
-# - DJANGO_SECRET_KEY
-# - DATABASE_URL
-# - JWT_SECRET_KEY
 ```
 
-4. **Run migrations**:
+5. **Run migrations**
 
 ```bash
+python manage.py makemigrations
 python manage.py migrate
 ```
 
-5. **Create superuser**:
+6. **Create superuser**
 
 ```bash
 python manage.py createsuperuser
 ```
 
-6. **Run development server**:
+7. **Run development server**
 
 ```bash
 python manage.py runserver
 ```
 
-The API will be available at `http://localhost:8000/api/v1/`
+API will be available at `http://localhost:8000/api/`
 
-## Project Structure
+## 📚 API Documentation
+
+Interactive API documentation available at:
+
+- **Swagger UI**: `http://localhost:8000/api/docs`
+- **Health Check**: `http://localhost:8000/api/health`
+
+## 🏗️ Project Structure
 
 ```
 backend/
-├── config/                 # Django project configuration
-│   ├── settings/          # Settings split by environment
-│   │   ├── base.py       # Base settings
-│   │   ├── development.py # Development settings
-│   │   └── production.py  # Production settings
-│   ├── api.py            # Main API router
-│   ├── urls.py           # URL configuration
-│   ├── wsgi.py           # WSGI configuration
-│   └── asgi.py           # ASGI configuration
-├── apps/                  # Django applications
-│   ├── authentication/   # User authentication & JWT
-│   ├── organizations/    # NGO organization management
-│   ├── grants/          # Grant opportunities
-│   ├── proposals/       # Proposal management
-│   ├── matching/        # Grant matching logic
-│   ├── ai/             # AI services layer
-│   └── core/           # Shared utilities
-├── requirements/        # Python dependencies
-│   ├── base.txt        # Base requirements
-│   ├── development.txt # Development requirements
-│   └── production.txt  # Production requirements
-├── manage.py           # Django management script
-├── .env.example        # Environment variables template
-└── README.md          # This file
+├── apps/
+│   ├── authentication/    # User authentication & JWT
+│   ├── organizations/     # Organization management
+│   ├── grants/           # Grant discovery & applications
+│   ├── proposals/        # Proposal creation & management
+│   ├── matching/         # AI-powered grant matching
+│   ├── ai/              # AI services (watsonx.ai, FAISS)
+│   └── core/            # Dashboard, notifications, analytics
+├── config/
+│   ├── settings/        # Environment-specific settings
+│   ├── urls.py         # URL configuration
+│   ├── wsgi.py         # WSGI configuration
+│   └── api.py          # Main API router
+├── migrations/          # Database migrations
+├── static/             # Static files
+├── media/              # User uploads
+├── logs/               # Application logs
+└── manage.py           # Django management script
 ```
 
-## API Documentation
-
-Once the server is running, visit:
-
-- **Interactive API Docs**: `http://localhost:8000/api/v1/docs`
-- **OpenAPI Schema**: `http://localhost:8000/api/v1/openapi.json`
-
-## API Endpoints
+## 🔑 Key Features
 
 ### Authentication
 
-- `POST /api/v1/auth/register` - Register new user
-- `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/refresh` - Refresh access token
-- `POST /api/v1/auth/logout` - Logout user
-- `GET /api/v1/auth/me` - Get current user
+- JWT-based authentication
+- Email/password registration
+- Token refresh mechanism
+- Profile management
 
-### Organizations
+### Grant Management
 
-- `GET /api/v1/organizations/` - List organizations
-- `GET /api/v1/organizations/{id}` - Get organization details
-- `PUT /api/v1/organizations/{id}` - Update organization
-- `GET /api/v1/organizations/{id}/stats` - Get organization statistics
+- Advanced search and filtering
+- Save/bookmark grants
+- Application tracking
+- Deadline monitoring
 
-### Grants
+### Proposal System
 
-- `GET /api/v1/grants/` - List grants (with filtering)
-- `GET /api/v1/grants/{id}` - Get grant details
-- `POST /api/v1/grants/` - Create grant (admin)
-- `PUT /api/v1/grants/{id}` - Update grant (admin)
-- `DELETE /api/v1/grants/{id}` - Delete grant (admin)
+- Rich text editor support
+- Version control
+- AI-assisted generation
+- Export to PDF/DOCX
 
-### Proposals
+### AI-Powered Matching
 
-- `GET /api/v1/proposals/` - List proposals
-- `GET /api/v1/proposals/{id}` - Get proposal details
-- `POST /api/v1/proposals/` - Create proposal
-- `PUT /api/v1/proposals/{id}` - Update proposal
-- `DELETE /api/v1/proposals/{id}` - Delete proposal
+- Semantic similarity matching
+- Category and tag alignment
+- Match quality scoring
+- Dismissible recommendations
 
-### Matching
+### Dashboard & Analytics
 
-- `GET /api/v1/matching/` - Get matched grants
-- `POST /api/v1/matching/calculate` - Calculate matches
+- Real-time statistics
+- Upcoming deadlines
+- Recent activity tracking
+- Notification system
 
-### AI Services
+## 🔧 Configuration
 
-- `POST /api/v1/ai/generate-proposal` - Generate proposal draft
-- `POST /api/v1/ai/improve-text` - Improve text
-- `POST /api/v1/ai/rewrite` - Rewrite text
-- `POST /api/v1/ai/adjust-tone` - Adjust tone
-- `POST /api/v1/ai/summarize` - Summarize text
-- `POST /api/v1/ai/expand` - Expand text
+### Environment Variables
 
-## Development
+See `.env.example` for all available configuration options.
 
-### Running Tests
-
-```bash
-pytest
-```
-
-### Code Formatting
-
-```bash
-black .
-```
-
-### Linting
-
-```bash
-flake8
-```
-
-### Database Migrations
-
-```bash
-# Create migrations
-python manage.py makemigrations
-
-# Apply migrations
-python manage.py migrate
-
-# Show migrations
-python manage.py showmigrations
-```
-
-### Django Shell
-
-```bash
-python manage.py shell
-```
-
-### Create Sample Data
-
-```bash
-python manage.py seed_data
-```
-
-## Environment Variables
-
-See `.env.example` for all available environment variables.
-
-### Required Variables
+**Required:**
 
 - `DJANGO_SECRET_KEY` - Django secret key
 - `DATABASE_URL` - PostgreSQL connection string
-- `JWT_SECRET_KEY` - JWT signing key
-
-### Optional Variables
-
 - `WATSONX_API_KEY` - IBM watsonx.ai API key
 - `WATSONX_PROJECT_ID` - IBM watsonx.ai project ID
-- `SENTRY_DSN` - Sentry error tracking DSN
-- `REDIS_URL` - Redis connection URL (for Celery)
 
-## Deployment
+**Optional:**
 
-### Render Deployment
+- `CORS_ALLOWED_ORIGINS` - Frontend URLs
+- `EMAIL_HOST` - SMTP server
+- `SENTRY_DSN` - Error tracking
 
-1. **Connect GitHub repository** to Render
-2. **Set environment variables** in Render dashboard
-3. **Deploy** - Render will automatically:
-   - Install dependencies
-   - Run migrations
-   - Collect static files
-   - Start gunicorn server
+### Database
 
-See `render.yaml` for deployment configuration.
+**Development (SQLite):**
 
-### Supabase Database Setup
+```python
+# Default - no configuration needed
+```
 
-1. **Create Supabase project**
-2. **Get connection string** from project settings
-3. **Set DATABASE_URL** environment variable
-4. **Run migrations** to create tables
+**Production (Supabase):**
 
-## Troubleshooting
+```bash
+DATABASE_URL=postgresql://user:pass@host:port/db?sslmode=require
+```
 
-### Database Connection Issues
+## 🚢 Deployment
 
-- Verify DATABASE_URL is correct
-- Check PostgreSQL is running
-- Ensure database exists
+### Render.com
 
-### Import Errors
+1. **Connect repository** to Render
+2. **Use Blueprint**: `render.yaml` is pre-configured
+3. **Set environment variables** in Render dashboard
+4. **Deploy**: Automatic on push to main branch
 
-- Activate virtual environment
-- Install requirements: `pip install -r requirements/development.txt`
+### Manual Deployment
 
-### Migration Issues
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-- Delete migration files (except `__init__.py`)
-- Run `python manage.py makemigrations`
-- Run `python manage.py migrate`
+# Collect static files
+python manage.py collectstatic --no-input
 
-## Contributing
+# Run migrations
+python manage.py migrate --no-input
 
-1. Create a feature branch
-2. Make your changes
-3. Run tests and linting
-4. Submit a pull request
+# Start with Gunicorn
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
+```
 
-## License
+## 🧪 Testing
 
-Proprietary - IBM Hackathon Project
+```bash
+# Run tests
+pytest
 
-## Support
+# With coverage
+pytest --cov=apps
 
-For issues and questions, please contact the development team.
+# Specific app
+pytest apps/authentication/tests/
+```
+
+## 📊 API Endpoints
+
+### Authentication
+
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login
+- `POST /api/auth/refresh` - Refresh token
+- `POST /api/auth/logout` - Logout
+- `GET /api/auth/me` - Get current user
+- `PUT /api/auth/profile` - Update profile
+
+### Grants
+
+- `GET /api/grants` - List grants (with filters)
+- `GET /api/grants/{id}` - Get grant details
+- `POST /api/grants/{id}/save` - Save grant
+- `DELETE /api/grants/{id}/save` - Unsave grant
+- `GET /api/grants/saved` - List saved grants
+
+### Proposals
+
+- `GET /api/proposals` - List proposals
+- `POST /api/proposals` - Create proposal
+- `GET /api/proposals/{id}` - Get proposal
+- `PUT /api/proposals/{id}` - Update proposal
+- `DELETE /api/proposals/{id}` - Delete proposal
+- `POST /api/proposals/{id}/submit` - Submit proposal
+- `POST /api/proposals/{id}/export` - Export to PDF/DOCX
+
+### Matching
+
+- `GET /api/matches` - Get grant matches
+- `POST /api/matches/calculate` - Calculate matches
+- `POST /api/matches/{id}/dismiss` - Dismiss match
+- `GET /api/matches/stats` - Match statistics
+
+### Dashboard
+
+- `GET /api/dashboard/stats` - Dashboard statistics
+- `GET /api/dashboard/deadlines` - Upcoming deadlines
+
+### Notifications
+
+- `GET /api/notifications` - List notifications
+- `POST /api/notifications/{id}/read` - Mark as read
+- `POST /api/notifications/read-all` - Mark all as read
+
+## 🔒 Security
+
+- HTTPS enforced in production
+- CORS configured for Vercel frontend
+- JWT token authentication
+- CSRF protection
+- SQL injection prevention
+- XSS protection headers
+- Rate limiting on auth endpoints
+
+## 🤝 Contributing
+
+1. Create feature branch
+2. Make changes
+3. Run tests
+4. Submit pull request
+
+## 📝 License
+
+Proprietary - IBM Consulting
+
+## 🆘 Support
+
+For issues and questions:
+
+- Check documentation in `/documentation`
+- Review API docs at `/api/docs`
+- Contact: support@grantbridge.org
+
+---
+
+**Made with ❤️ by Bob**

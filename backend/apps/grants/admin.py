@@ -12,7 +12,7 @@ class GrantAdmin(admin.ModelAdmin):
     
     list_display = [
         'title',
-        'organization',
+        'funder_name',
         'funding_amount',
         'deadline',
         'status',
@@ -21,13 +21,13 @@ class GrantAdmin(admin.ModelAdmin):
         'created_at'
     ]
     list_filter = ['status', 'is_active', 'source', 'created_at', 'deadline']
-    search_fields = ['title', 'organization', 'description', 'external_id']
+    search_fields = ['title', 'funder_name', 'description', 'external_id']
     ordering = ['-deadline']
     date_hierarchy = 'deadline'
     
     fieldsets = (
         ('Basic Information', {
-            'fields': ('title', 'organization', 'status', 'is_active')
+            'fields': ('title', 'funder_name', 'status', 'is_active')
         }),
         ('Financial Details', {
             'fields': ('funding_amount', 'min_amount', 'max_amount')
